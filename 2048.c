@@ -20,7 +20,7 @@ void init_map()
     SCORE = 0;
 
     BOARD = (uint16_t**) malloc(SIZE * sizeof(uint16_t*));
-    if (!BOARD) exit(-1);
+    //if (!BOARD) exit(-1);
 
     for (i = 0; i < SIZE; i++)
         BOARD[i] = (uint16_t*) malloc(SIZE * sizeof(uint16_t));

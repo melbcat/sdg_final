@@ -93,7 +93,7 @@ int main()
         int8_t c = menu() - 1;
         if (c >= 4)
             exit(0);
-        ptr = func[c];
+        ptr = func[c]; // out of bound
         (*ptr)();
     }
     

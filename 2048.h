@@ -12,7 +12,7 @@
 
 struct game {
     uint16_t **board;
-    int size;
+    uint8_t size;
     uint32_t space;
     uint32_t score;
     char name[20];
