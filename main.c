@@ -17,7 +17,7 @@ void level1()
     myprintf("Hey, 2048 is so difficult. Let's begin from 256. I think everyone can reach it...?\n");
     myprintf("Press any key to start...\n");
     getchar();
-    if (!play(256)) {
+    if (!play(16)) {
         myprintf("How can you lose? I can't believe it!\n");
         exit(0);
     } else {
@@ -42,11 +42,19 @@ int menu()
     myprintf("3. show ranking\n");
     myprintf("4. set username\n");
     myprintf("5. exit\n");
-    myprintf("> ");
 
     char buf[4];
-    fgets(buf, 4, stdin);
-    return atoi(buf);
+    int c;
+
+    while(1) {
+        myprintf("> ");
+        fgets(buf, 4, stdin);
+        c = atoi(buf);
+        if (!c)
+            myprintf("Illegal choice!\n");
+        else
+            return c;
+    }
 }
 
 void play_again()
@@ -82,8 +90,8 @@ int main()
     init();
     level1();
     while (1) {
-        uint8_t c = menu() - 1;
-        if (c == 4)
+        int8_t c = menu() - 1;
+        if (c >= 4)
             exit(0);
         ptr = func[c];
         (*ptr)();
