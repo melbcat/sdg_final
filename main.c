@@ -1,6 +1,5 @@
 #include <signal.h>
 #include <stdint.h>
-#include <math.h>
 
 #include "2048.h"
 
@@ -17,12 +16,12 @@ void level1()
     myprintf("Hey, 2048 is so difficult. Let's begin from 256. I think everyone can reach it...?\n");
     myprintf("Press any key to start...\n");
     getchar();
-    if (!play(16)) {
-        myprintf("How can you lose? I can't believe it!\n");
-        exit(0);
-    } else {
+    if (play(16)) {
         myprintf("Congraz! You pass 256! XD\n");
         clear_map();
+    } else {
+        myprintf("How can you lose? I can't believe it!\n");
+        exit(0);
     }
 }
 
@@ -32,6 +31,7 @@ void init()
     alarm(300);
     SIZE = 4;
     CHEAT = 1;
+    sprintf(NAME, "Player");
 }
 
 int menu()
@@ -60,7 +60,11 @@ int menu()
 void play_again()
 {
     init_map();
-    play(pow(2, SIZE * SIZE * 2 / 3 + 1));
+    int goal = count_goal();
+    if (play(goal)) {
+        myprintf("Congraz! You pass %d! XD\n", goal);
+        clear_map();
+    }
     
 }
 
@@ -68,7 +72,13 @@ void set_mapsize()
 {
     myprintf("map size: ");
     char buf[4];
-    SIZE = atoi(fgets(buf, 4, stdin));
+    int size = atoi(fgets(buf, 4, stdin));
+    if (size < 4)
+        myprintf("Map too small!\n");
+    else if (size > 14)
+        myprintf("Map too large!\n");
+    else
+        SIZE = size;
 }
 
 void show_ranking()
@@ -78,6 +88,7 @@ void show_ranking()
 void set_name()
 {
     //off-by-one, open cheat mode
+    myprintf("current name: %s\n", NAME);
     myprintf("username: ");
     scanf("%20s", NAME);
 }

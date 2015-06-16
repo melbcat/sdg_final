@@ -1,6 +1,8 @@
 #include <stdint.h>
+#include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 
 #define SIZE g.size
 #define SPACE g.space
@@ -23,4 +25,5 @@ Game g;
 
 void init_map();
 void clear_map();
+uint32_t count_goal();
 int play(uint32_t);
