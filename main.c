@@ -16,6 +16,7 @@ void level1()
     myprintf("Hey, 2048 is so difficult. Let's begin from 256. I think everyone can reach it...?\n");
     myprintf("Press any key to start...\n");
     getchar();
+    init_map();
     if (play(16)) {
         myprintf("Congraz! You pass 256! XD\n");
         clear_map();
@@ -61,10 +62,12 @@ void play_again()
 {
     init_map();
     int goal = count_goal();
-    if (play(goal)) {
+    if (goal == 0) {
+        myprintf("It's impossible to win the game.\n");
+    } else if (play(goal)) {
         myprintf("Congraz! You pass %d! XD\n", goal);
-        clear_map();
-    }
+    } else
+        myprintf("You lose. What a pity.");
     
 }
 
@@ -75,8 +78,6 @@ void set_mapsize()
     int size = atoi(fgets(buf, 4, stdin));
     if (size < 4)
         myprintf("Map too small!\n");
-    else if (size > 14)
-        myprintf("Map too large!\n");
     else
         SIZE = size;
 }
@@ -87,7 +88,6 @@ void show_ranking()
 
 void set_name()
 {
-    //off-by-one, open cheat mode
     myprintf("current name: %s\n", NAME);
     myprintf("username: ");
     scanf("%20s", NAME);
@@ -101,10 +101,10 @@ int main()
     init();
     level1();
     while (1) {
-        int8_t c = menu() - 1;
-        if (c >= 4)
-            exit(0);
-        ptr = func[c]; // out of bound
+        uint8_t c = menu();
+        if (c > 5)
+            continue;
+        ptr = func[c - 1];
         (*ptr)();
     }
     

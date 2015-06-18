@@ -19,8 +19,8 @@ void init_map()
     SPACE = SIZE * SIZE;
     SCORE = 0;
 
-    BOARD = (uint16_t**) malloc(SIZE * sizeof(uint16_t*));
-    if (!BOARD) exit(-1);
+    if (!BOARD)
+        BOARD = (uint16_t**) malloc(SIZE * sizeof(uint16_t*));
 
     for (i = 0; i < SIZE; i++)
         BOARD[i] = (uint16_t*) malloc(SIZE * sizeof(uint16_t));
@@ -29,8 +29,8 @@ void init_map()
             BOARD[i][j] = 0;
     }
 
-    for (i = 0; i < SIZE / 2; i++)
-        new_item();
+    new_item();
+    new_item();
 }
 
 void clear_map()
@@ -39,11 +39,11 @@ void clear_map()
     for (i = 0; i < SIZE; i++)
         free(BOARD[i]);
     free(BOARD);
+    BOARD = NULL;
 }
 
 int play(uint32_t goal)
 {
-    init_map();
     while (!reach_goal(goal)) {
         print_board();
         if (!SPACE)
@@ -100,7 +100,7 @@ void cheat()
 void new_item()
 {
     while (1) {
-        uint32_t loc = rand() % (SIZE * SIZE); // div 0
+        uint32_t loc = rand() % (SIZE * SIZE);
         int x = loc % SIZE;
         int y = loc / SIZE;
         
@@ -138,7 +138,7 @@ void print_board()
     char info_fmt[16];
 
     myprintf("|");
-    sprintf(info, "  goal: %u  score: %u  ", count_goal(), SCORE);
+    sprintf(info, "  goal: %u score: %u  ", count_goal(), SCORE);
     sprintf(info_fmt, "%%-%ds", SIZE * 6 - 1);
     myprintf(info_fmt, info);
     myprintf("|\n");
