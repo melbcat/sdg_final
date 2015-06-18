@@ -18,6 +18,7 @@ void init_map()
 
     SPACE = SIZE * SIZE;
     SCORE = 0;
+    srand(SEED);
 
     if (!BOARD)
         BOARD = (uint16_t**) malloc(SIZE * sizeof(uint16_t*));
@@ -72,9 +73,12 @@ int play(uint32_t goal)
                 break;
             case 'C':
             case 'c':
-                if (!CHEAT)
+                if (CHEAT)
                     cheat();
                 break;
+            case 'G':
+            case 'g':
+                return 0;
         }
     }
 
@@ -92,7 +96,7 @@ void cheat()
     int i, j;
     for (i = 0; i < SIZE; i++) {
         for (j = 0; j < SIZE; j++) {
-            BOARD[i][j] = (BOARD[i][j] < 8192)? BOARD[i][j] * 2 : 0;
+            BOARD[i][j] = (BOARD[i][j] < 16384)? BOARD[i][j] * 2 : 0;
         }
     }
 }
@@ -138,7 +142,7 @@ void print_board()
     char info_fmt[16];
 
     myprintf("|");
-    sprintf(info, "  goal: %u score: %u  ", count_goal(), SCORE);
+    sprintf(info, " goal: %u score: %u ", count_goal(), SCORE);
     sprintf(info_fmt, "%%-%ds", SIZE * 6 - 1);
     myprintf(info_fmt, info);
     myprintf("|\n");

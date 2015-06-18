@@ -20,6 +20,7 @@ void level1()
     if (play(16)) {
         myprintf("Congraz! You pass 256! XD\n");
         clear_map();
+        CHEAT = 1;
     } else {
         myprintf("How can you lose? I can't believe it!\n");
         exit(0);
@@ -31,14 +32,15 @@ void init()
     signal(SIGALRM, handler);
     alarm(300);
     SIZE = 4;
-    CHEAT = 1;
+    CHEAT = 0;
+    SEED = time(NULL);
     sprintf(NAME, "Player");
 }
 
 int menu()
 {
     myprintf("======MENU======\n");
-    myprintf("1. play again\n");
+    myprintf("1. start\n");
     myprintf("2. set map size\n");
     myprintf("3. show ranking\n");
     myprintf("4. set username\n");
@@ -58,8 +60,13 @@ int menu()
     }
 }
 
-void play_again()
+void start()
 {
+    if (!CHEAT) {
+        level1();
+        return;
+    }
+
     init_map();
     int goal = count_goal();
     if (goal == 0) {
@@ -67,12 +74,17 @@ void play_again()
     } else if (play(goal)) {
         myprintf("Congraz! You pass %d! XD\n", goal);
     } else
-        myprintf("You lose. What a pity.");
+        myprintf("You lose. What a pity.\n");
     
 }
 
 void set_mapsize()
 {
+    if (!CHEAT) {
+        myprintf("Locked.\n");
+        return;
+    }
+
     myprintf("map size: ");
     char buf[4];
     int size = atoi(fgets(buf, 4, stdin));
@@ -95,14 +107,15 @@ void set_name()
 
 int main()
 {
-    void* func[] = { play_again, set_mapsize, show_ranking, set_name };
+    void* func[] = { start, set_mapsize, show_ranking, set_name };
     void (*ptr)();
 
     init();
-    level1();
     while (1) {
         uint8_t c = menu();
-        if (c > 5)
+        if (c == 5)
+            exit(0);
+        else if (c > 5)
             continue;
         ptr = func[c - 1];
         (*ptr)();
