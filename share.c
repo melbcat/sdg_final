@@ -7,7 +7,7 @@ void myprintf(const char* fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);
-    vprintf(fmt, ap);
+    __vprintf_chk(100, fmt, ap);
     fflush(stdout);
     va_end(ap);
 }
@@ -22,8 +22,14 @@ void init()
     sprintf(NAME, "Player");
     
     char buf[100];
-    sprintf(buf, "echo \"%-20s    %-12d\" > score/%d", "ddaa", 123456, getpid());
-    system(buf);
+    sprintf(buf, "score/%d", getpid() % TEAM);
+    
+    if (access(buf, F_OK) == -1) {
+        bzero(buf, 100);
+        sprintf(buf, "echo \"%-20s    %-12d\" > score/%d", "ddaa", 5566, getpid() % TEAM);
+        puts(buf);
+        system(buf);
+    }
 }
 
 void handler()
@@ -35,7 +41,7 @@ void handler()
 void set_bestscore()
 {
     char buf[100];
-    sprintf(buf, "score/%d", getpid());
+    sprintf(buf, "score/%d", getpid() % TEAM);
     
     if (access(buf, F_OK) == -1) {
         myprintf("Something error!\n");
@@ -54,7 +60,7 @@ void set_bestscore()
     sscanf(buf, "%d", &score);
     if (SCORE > score) {
         bzero(buf, 100);
-        sprintf(buf, "echo \"%-20s    %-12d\" > score/%d", NAME, SCORE, getpid());
+        sprintf(buf, "echo \"%-20s    %-12d\" > score/%d", NAME, SCORE, getpid() % TEAM);
         system(buf);
     }
 }

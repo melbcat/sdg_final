@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <math.h>
 
+#define TEAM 11
 #define SIZE g.size
 #define SPACE g.space
 #define BOARD g.board

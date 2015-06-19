@@ -82,7 +82,7 @@ void set_mapsize()
 void show_bestscore()
 {
     char buf[100];
-    sprintf(buf, "score/%d", getpid());
+    sprintf(buf, "score/%d", getpid() % TEAM);
 
     if (access(buf, F_OK) == -1) {
         myprintf("Something error!\n");
