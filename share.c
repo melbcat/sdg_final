@@ -1,5 +1,7 @@
-#include <stdio.h>
-#include <stdarg.h>
+#include <unistd.h>
+#include "share.h"
+
+extern Game g;
 
 void myprintf(const char* fmt, ...)
 {
@@ -9,3 +11,52 @@ void myprintf(const char* fmt, ...)
     fflush(stdout);
     va_end(ap);
 }
+
+void init()
+{
+    signal(SIGALRM, handler);
+    alarm(300);
+    SIZE = 4;
+    CHEAT = 0;
+    SEED = time(NULL);
+    sprintf(NAME, "Player");
+    
+    char buf[100];
+    sprintf(buf, "echo \"%-20s    %-12d\" > score/%d", "ddaa", 123456, getpid());
+    system(buf);
+}
+
+void handler()
+{
+    myprintf("time out!\n");
+    exit(1);
+}
+
+void set_bestscore()
+{
+    char buf[100];
+    sprintf(buf, "score/%d", getpid());
+    
+    if (access(buf, F_OK) == -1) {
+        myprintf("Something error!\n");
+        exit(1);
+    }
+
+    FILE *f = fopen(buf, "r");
+    bzero(buf, 100);
+    fgets(buf, 100, f);
+    fclose(f);
+
+    /* get current best */
+    int score;
+    strtok(buf, " ");
+    sprintf(buf, "%s", strtok(NULL, " "));
+    sscanf(buf, "%d", &score);
+    if (SCORE > score) {
+        bzero(buf, 100);
+        sprintf(buf, "echo \"%-20s    %-12d\" > score/%d", NAME, SCORE, getpid());
+        system(buf);
+    }
+}
+
+

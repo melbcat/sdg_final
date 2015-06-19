@@ -78,7 +78,9 @@ int play(uint32_t goal)
                 break;
             case 'G':
             case 'g':
-                return 0;
+                if (CHEAT)
+                    return 0;
+                break;
         }
     }
 

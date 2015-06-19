@@ -1,15 +1,9 @@
-#include <signal.h>
 #include <stdint.h>
+#include <unistd.h>
 
 #include "2048.h"
 
-extern Game g; 
-
-void handler()
-{
-    myprintf("time out!\n");
-    exit(1);
-}
+extern Game g;
 
 void level1()
 {
@@ -27,22 +21,12 @@ void level1()
     }
 }
 
-void init()
-{
-    signal(SIGALRM, handler);
-    alarm(300);
-    SIZE = 4;
-    CHEAT = 0;
-    SEED = time(NULL);
-    sprintf(NAME, "Player");
-}
-
 int menu()
 {
     myprintf("======MENU======\n");
     myprintf("1. start\n");
     myprintf("2. set map size\n");
-    myprintf("3. show ranking\n");
+    myprintf("3. best score\n");
     myprintf("4. set username\n");
     myprintf("5. exit\n");
 
@@ -53,7 +37,7 @@ int menu()
         myprintf("> ");
         fgets(buf, 4, stdin);
         c = atoi(buf);
-        if (!c)
+        if (c == 0)
             myprintf("Illegal choice!\n");
         else
             return c;
@@ -73,6 +57,7 @@ void start()
         myprintf("It's impossible to win the game.\n");
     } else if (play(goal)) {
         myprintf("Congraz! You pass %d! XD\n", goal);
+        set_bestscore();
     } else
         myprintf("You lose. What a pity.\n");
     
@@ -94,8 +79,23 @@ void set_mapsize()
         SIZE = size;
 }
 
-void show_ranking()
+void show_bestscore()
 {
+    char buf[100];
+    sprintf(buf, "score/%d", getpid());
+
+    if (access(buf, F_OK) == -1) {
+        myprintf("Something error!\n");
+        exit(1);
+    }
+
+    FILE *f = fopen(buf, "r");
+    bzero(buf, 100);
+    fgets(buf, 100, f);
+    fclose(f);
+
+    myprintf("Best score:\n");
+    myprintf(buf);
 }
 
 void set_name()
@@ -107,7 +107,7 @@ void set_name()
 
 int main()
 {
-    void* func[] = { start, set_mapsize, show_ranking, set_name };
+    void* func[] = { start, set_mapsize, show_bestscore, set_name };
     void (*ptr)();
 
     init();
