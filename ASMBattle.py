@@ -64,6 +64,7 @@ class ASMBattle:
                 or (re.search("jne", act) and not self.zflag) \
                 or (re.search("ja", act) and self.cflag):
                 self.eip = int(dest) - 1
+
         elif re.search("cmp", act):
             dest = re.search("(e[abcd]x|e[sd]i|[\d]+)", act).group()
             src = re.search(", *(e[abcd]x|e[sd]i|[\d]+)", act).group().split(" ")[1]
@@ -75,9 +76,6 @@ class ASMBattle:
             exec "self.cflag = {} > {}".format(dest, src) in dict(locals())
 
     def action(self, o):
-        if "int" not in self.acts[self.eip - 1]:
-            return
-
         if self.eax == 1:
             if self.ebx == 0 or self.ebx > 3:
                 if o.ebx == 0 or o.ebx > 3:

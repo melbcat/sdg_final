@@ -45,15 +45,17 @@ def start_game():
         if not s.is_running() or not e.is_running():
             return
             
-        print s.acts[s.eip - 1],
-        print e.acts[s.eip - 1]
-        if "int" not in s.acts[s.eip - 1]:
+        s_act = s.acts[s.eip - 1]
+        e_act = e.acts[e.eip - 1]
+        if "int" not in s_act:
             s.ni()
-        if "int" not in e.acts[e.eip - 1]:
+        if "int" not in e_act:
             e.ni()
 
-        s.action(e)
-        e.action(s)
+        if "int" in s_act:
+            s.action(e)
+        if "int" in e_act:
+            e.action(s)
     
 
 def main():
@@ -75,7 +77,7 @@ def main():
 
     start_game()
     
-    # judge winner
+    # judge winner, 0 = self, 1 = enemy
     if s.is_legal and e.is_legal:
         if s.esi == 0 and e.esi == 0:
             winner = 2
@@ -86,6 +88,9 @@ def main():
             winner = 2
         else:
             winner = 0 if s.is_legal else 1
+
+    s.print_info()
+    e.print_info()
 
     print winner
         
