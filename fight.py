@@ -38,14 +38,22 @@ def parse_actions(acts):
     return True
 
 def start_game():
+    s.eip = 1
+    e.eip = 1
+
     while True:
-        if not s.is_running():
-            return 0 
-        if not e.is_running():
-            return 1 
+        if not s.is_running() or not e.is_running():
+            return
             
-        s.ni()
-        e.ni()
+        print s.acts[s.eip - 1],
+        print e.acts[s.eip - 1]
+        if "int" not in s.acts[s.eip - 1]:
+            s.ni()
+        if "int" not in e.acts[e.eip - 1]:
+            e.ni()
+
+        s.action(e)
+        e.action(s)
     
 
 def main():
@@ -66,6 +74,19 @@ def main():
         e.is_legal = True
 
     start_game()
+    
+    # judge winner
+    if s.is_legal and e.is_legal:
+        if s.esi == 0 and e.esi == 0:
+            winner = 2
+        else:
+            winner = 0 if s.esi > 0 else 1
+    else:
+        if not s.is_legal and not e.is_legal:
+            winner = 2
+        else:
+            winner = 0 if s.is_legal else 1
 
+    print winner
         
 main()

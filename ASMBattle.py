@@ -9,7 +9,6 @@ class ASMBattle:
     edx = nothing
     esi = HP
     sdi = opponent's HP
-    zflag = condition jump
     """
 
     def __init__(self):
@@ -17,8 +16,8 @@ class ASMBattle:
         self.ebx = 0
         self.ecx = 0
         self.edx = 0
-        self.esi = 100
-        self.edi = 100
+        self.esi = 10
+        self.edi = 10
         self.eip = 0
         self.zflag = False
         self.is_legal = False 
@@ -26,25 +25,24 @@ class ASMBattle:
     def set_actions(self, acts):
         self.acts = acts
 
-    def ni(self):
-        def print_info():
-            print self.acts[self.eip - 1]
-            print "eax: " + str(self.eax)
-            print "ebx: " + str(self.ebx)
-            print "ecx: " + str(self.ecx)
-            print "edx: " + str(self.edx)
-            print "esi: " + str(self.esi)
-            print "edi: " + str(self.edi)
-            print "eip: " + str(self.eip)
-            print "zflag: " + str(self.zflag)
-            raw_input()
-            os.system("clear")
+    def print_info(self):
+        print "eax: " + str(self.eax)
+        print "ebx: " + str(self.ebx)
+        print "ecx: " + str(self.ecx)
+        print "edx: " + str(self.edx)
+        print "esi: " + str(self.esi)
+        print "edi: " + str(self.edi)
+        print "eip: " + str(self.eip)
+        print "zflag: " + str(self.zflag)
+        print "cflag: " + str(self.cflag)
+        raw_input()
+        os.system("clear")
             
+    def ni(self):
+        self.execute(self.acts[self.eip - 1])
         self.eip += 1
         if self.eip > len(self.acts):
             self.is_legal = False
-        else:
-            self.execute(self.acts[self.eip - 1])
 
     def execute(self, act):
         def is_reg(arg):
@@ -61,10 +59,11 @@ class ASMBattle:
 
         elif re.search("(jmp|je|ja|jne)", act):
             dest = re.search("[\d]+", act).group()
-            if re.search("jmp", act) or self.zflag == True:
+            if re.search("jmp", act) \
+                or (re.search("je", act) and self.zflag) \
+                or (re.search("jne", act) and not self.zflag) \
+                or (re.search("ja", act) and self.cflag):
                 self.eip = int(dest) - 1
-        elif re.search("int", act):
-            return
         elif re.search("cmp", act):
             dest = re.search("(e[abcd]x|e[sd]i|[\d]+)", act).group()
             src = re.search(", *(e[abcd]x|e[sd]i|[\d]+)", act).group().split(" ")[1]
@@ -73,6 +72,43 @@ class ASMBattle:
             dest = "self." + dest if is_reg(dest) else dest
             src = "self." + src if is_reg(src) else src
             exec "self.zflag = {} == {}".format(dest, src) in dict(locals())
+            exec "self.cflag = {} > {}".format(dest, src) in dict(locals())
+
+    def action(self, o):
+        if "int" not in self.acts[self.eip - 1]:
+            return
+
+        if self.eax == 1:
+            if self.ebx == 0 or self.ebx > 3:
+                if o.ebx == 0 or o.ebx > 3:
+                    # NO vs NO
+                    o.esi -= 3
+                else:
+                    # NO vs any
+                    o.esi -= 1
+            else:
+                if o.ebx == 0 or o.ebx > 3:
+                    # any vs NO
+                    o.esi -= 3
+                elif self.ebx == o.ebx % 3 + 1:
+                    # suppress
+                    o.esi -= 3
+                elif self.ebx == o.ebx:
+                    o.esi -= 2
+                else:
+                    # suppressed
+                    o.esi -= 1
+                    
+            self.edi = o.esi
+        elif self.eax == 2:
+            self.esi += 1
+            o.edi = self.esi
+        else:
+            o.ebx = 0
+
+        self.eip += 1
+        if self.eip > len(self.acts):
+            self.is_legal = False
         
     def is_running(self):
         return self.esi > 0 and self.is_legal
