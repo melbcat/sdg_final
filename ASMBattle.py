@@ -3,7 +3,7 @@ import re
 
 class ASMBattle:
     """
-    eax = action
+    eax = status
     ebx = attribute
     ecx = nothing
     edx = nothing

@@ -1,7 +1,8 @@
+#!/usr/bin/python
+
 import sys
 import argparse
 import re
-import os
 from ASMBattle import ASMBattle
 
 s = ASMBattle()
@@ -44,7 +45,7 @@ def start_game():
             return 1 
             
         s.ni()
-        #e.ni()
+        e.ni()
     
 
 def main():
