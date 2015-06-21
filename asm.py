@@ -113,8 +113,8 @@ def start_game():
 
 def main():
     parser = argparse.ArgumentParser(description='ASM battle')
-    parser.add_argument("-e", "--enemy", help="Enemy's action.", default="enemy")
-    parser.add_argument("-s", "--self", help="Your's action.", default="self")
+    parser.add_argument("-e", "--enemy", help="Enemy's actions.", default="enemy")
+    parser.add_argument("-s", "--self", help="Your's actions.", default="self")
     args = parser.parse_args()
 
 
