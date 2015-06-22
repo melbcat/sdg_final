@@ -29,6 +29,7 @@ class ASMMon:
     def set_name(self, name):
         self.name = name
 
+    """
     def print_info(self):
         os.system("clear")
         print "=======" + self.name + "========"
@@ -43,6 +44,7 @@ class ASMMon:
         print "zflag: " + str(self.zflag)
         print "cflag: " + str(self.cflag)
         raw_input()
+    """
             
     def ni(self, o):
         if self.eax == 2:
@@ -53,6 +55,48 @@ class ASMMon:
         self.eip += 1
         if self.eip > len(self.acts):
             self.is_legal = False
+
+    def print_info(self, o):
+        fmt =\
+"""\
+[{0}]
+HP: {1}   {2}
+Status: {3}
+Msg:
+{4}
+====================="""
+
+        if self.eax == 1:
+            status = "attack"
+        elif self.eax == 2:
+            status = "defense"
+        else:
+            status = "awaiting"
+
+        if self.ebx == 1:
+            attr = "Fire"
+        elif self.ebx == 2:
+            attr = "Water"
+        elif self.ebx == 3:
+            attr = "Grass"
+        else:
+            attr = "none"
+
+        act = self.acts[self.eip - 2]
+
+        if re.search("^ *mov +eax", act):
+            msg = "{} changes to {} status.".format(self.name, status)
+        elif re.search("^ *mov +ebx", act):
+            msg = "{} changes to {} attribute.".format(self.name, attr)
+        elif re.search("^ *int*?", act):
+            msg = "{} takes {} action.\n".format(self.name, status)
+            msg += "{} decreases {} HP".format(o.name, o.delta)
+        else:
+            msg = "{} is preparing to do something...".format(self.name)
+
+        print fmt.format(self.name, self.esi, attr, status, msg)
+
+
 
     def execute(self, act, o):
         def is_reg(arg):
@@ -87,25 +131,35 @@ class ASMMon:
 
         elif re.search("int", act):
             if self.eax == 1:
-                if self.ebx == 0 or self.ebx > 3:
+                if o.eax == 2:
+                    # defense
+                    o.esi -= 1
+                    o.delta = 1
+                elif self.ebx == 0 or self.ebx > 3:
                     if o.ebx == 0 or o.ebx > 3:
                         # NO vs NO
                         o.esi -= 3
+                        o.delta = 3
                     else:
                         # NO vs any
                         o.esi -= 1
+                        o.delta = 1
                 else:
                     if o.ebx == 0 or o.ebx > 3:
                         # any vs NO
                         o.esi -= 3
+                        o.delta = 3
                     elif self.ebx == o.ebx % 3 + 1:
                         # suppress
                         o.esi -= 3
+                        o.delta = 3
                     elif self.ebx == o.ebx:
                         o.esi -= 2
+                        o.delta = 2 
                     else:
                         # suppressed
                         o.esi -= 1
+                        o.delta = 1 
                         
                 self.edi = o.esi
             elif self.eax == 2:

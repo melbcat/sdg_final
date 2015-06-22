@@ -53,13 +53,16 @@ def start_game():
             return
         if not s.is_running() or not e.is_running():
             return
-            
-        if args.info:
-            s.print_info()
+
+        import os
+        os.system("clear")           
         s.ni(e)
         if args.info:
-            e.print_info()
+            s.print_info(e)
         e.ni(s)
+        if args.info:
+            e.print_info(s)
+        raw_input()
 
 def main():
     global args
