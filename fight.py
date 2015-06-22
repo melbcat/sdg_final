@@ -43,8 +43,9 @@ def parse_actions(acts):
 def start_game():
     s.eip = 1
     e.eip = 1
-    s.set_name("self")
-    e.set_name("enemy")
+    s.set_name("Ash Ketchum")
+    e.set_name("Gary Oak")
+    e.esi = 20
 
     stime = int(time.time())
 
@@ -104,8 +105,9 @@ def main():
         winner = 0 if s.is_legal else 1
 
     if winner == 0:
-        print "Self win!"
+        print "Ash Ketchum"
     else:
-        print "Enemy win!"
+        print "Gary Oak"
+        print open("/home/ASMMon/flag", "r").read()
         
 main()
