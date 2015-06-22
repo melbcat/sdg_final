@@ -26,8 +26,13 @@ class ASMMon:
     def set_actions(self, acts):
         self.acts = acts
 
+    def set_name(self, name):
+        self.name = name
+
     def print_info(self):
         os.system("clear")
+        print "=======" + self.name + "========"
+        print str(self.acts[self.eip - 1])
         print "eax: " + str(self.eax)
         print "ebx: " + str(self.ebx)
         print "ecx: " + str(self.ecx)

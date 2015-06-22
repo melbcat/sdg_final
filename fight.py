@@ -1,8 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/python2.7
 
 import sys
 import argparse
 import re
+import time
 from ASMMon import ASMMon
 
 s = ASMMon()
@@ -40,8 +41,14 @@ def parse_actions(acts):
 def start_game():
     s.eip = 1
     e.eip = 1
+    s.set_name("self")
+    e.set_name("enemy")
+
+    stime = int(time.time())
 
     while True:
+        if int(time.time()) - stime > 10:
+            return
         if not s.is_running() or not e.is_running():
             return
             
@@ -68,17 +75,14 @@ def main():
     start_game()
     
     # judge winner, 0 = self, 1 = enemy
-    if s.is_legal and e.is_legal:
-        if s.esi == 0 and e.esi == 0:
+    if (s.is_legal and e.is_legal) or \
+        (not s.is_legal and not e.is_legal): # judge by HP
+        if s.esi == e.esi:
             winner = 2
         else:
-            winner = 0 if s.esi > 0 else 1
-    else:
-        if not s.is_legal and not e.is_legal:
-            winner = 2
-        else:
-            winner = 0 if s.is_legal else 1
-
+            winner = 0 if s.esi > e.esi else 1
+    else: # judge by legal
+        winner = 0 if s.is_legal else 1
 
     print winner
         
