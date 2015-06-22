@@ -9,6 +9,8 @@ from ASMMon import ASMMon
 s = ASMMon()
 e = ASMMon()
 
+args = None
+
 def check_fmt(act):
     pat = "^ *("
     # legal instructions
@@ -52,18 +54,29 @@ def start_game():
         if not s.is_running() or not e.is_running():
             return
             
+        if args.info != "off":
+            s.print_info()
         s.ni(e)
+        if args.info != "off":
+            e.print_info()
         e.ni(s)
 
 def main():
+    global args
+
     parser = argparse.ArgumentParser(description='ASM battle')
-    parser.add_argument("-e", "--enemy", help="Enemy's actions.", default="enemy")
-    parser.add_argument("-s", "--self", help="Your's actions.", default="self")
+    parser.add_argument("-e", "--enemy", help="Enemy's actions.", default="enemy", required = True, metavar = "ENEMY ACTION")
+    parser.add_argument("-s", "--self", help="Your's actions.", default="self", required = True, metavar = "SELF ACTION")
+    parser.add_argument("-i", "--info", help="Show the battle info.", action='store_true')
     args = parser.parse_args()
 
 
-    self_acts = open(args.self, "r").read().strip().split("\n")
-    enemy_acts = open(args.enemy, "r").read().strip().split("\n")
+    try:
+        self_acts = open(args.self, "r").read().strip().split("\n")
+        enemy_acts = open(args.enemy, "r").read().strip().split("\n")
+    except:
+        print "File not found!"
+        sys.exit(0)
     
     if parse_actions(self_acts):
         s.set_actions(self_acts)
