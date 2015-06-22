@@ -1,7 +1,7 @@
 import os
 import re
 
-class ASMBattle:
+class ASMMon:
     """
     eax = status
     ebx = attribute
