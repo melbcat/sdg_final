@@ -3,10 +3,10 @@
 import sys
 import argparse
 import re
-from ASMBattle import ASMBattle
+from ASMMon import ASMMon
 
-s = ASMBattle()
-e = ASMBattle()
+s = ASMMon()
+e = ASMMon()
 
 def check_fmt(act):
     pat = "^ *("
@@ -47,13 +47,6 @@ def start_game():
             
         s.ni(e)
         e.ni(s)
-
-        print "self:"
-        print s.acts[s.eip - 2]
-        s.print_info()
-        print "enemy:"
-        print e.acts[e.eip - 2]
-        e.print_info()
 
 def main():
     parser = argparse.ArgumentParser(description='ASM battle')
