@@ -80,7 +80,7 @@ Msg:
         elif self.ebx == 3:
             attr = "Grass"
         else:
-            attr = "none"
+            attr = "None"
 
         act = self.acts[self.eip - 2]
 
@@ -90,7 +90,12 @@ Msg:
             msg = "{} changes to {} attribute.".format(self.name, attr)
         elif re.search("^ *int*?", act):
             msg = "{} takes {} action.\n".format(self.name, status)
-            msg += "{} decreases {} HP".format(o.name, o.delta)
+            if self.eax == 1:
+                msg += "{} decreases {} HP".format(o.name, o.delta)
+            elif self.eax == 2:
+                msg += "{} increases 1 HP".format(self.name)
+            else:
+                msg += "{} become None attribute".format(o.name)
         else:
             msg = "{} is preparing to do something...".format(self.name)
 
