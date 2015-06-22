@@ -20,12 +20,14 @@ class ASMBattle:
         self.edi = 10
         self.eip = 0
         self.zflag = False
+        self.cflag = False
         self.is_legal = False 
 
     def set_actions(self, acts):
         self.acts = acts
 
     def print_info(self):
+        os.system("clear")
         print "eax: " + str(self.eax)
         print "ebx: " + str(self.ebx)
         print "ecx: " + str(self.ecx)
@@ -36,15 +38,18 @@ class ASMBattle:
         print "zflag: " + str(self.zflag)
         print "cflag: " + str(self.cflag)
         raw_input()
-        os.system("clear")
             
-    def ni(self):
-        self.execute(self.acts[self.eip - 1])
+    def ni(self, o):
+        if self.eax == 2:
+            self.esi -= 1
+            o.edi = self.esi
+        self.execute(self.acts[self.eip - 1], o)
+        
         self.eip += 1
         if self.eip > len(self.acts):
             self.is_legal = False
 
-    def execute(self, act):
+    def execute(self, act, o):
         def is_reg(arg):
             return re.search("(e[abcd]x|e[sd]i)", arg)
             
@@ -75,39 +80,35 @@ class ASMBattle:
             exec "self.zflag = {} == {}".format(dest, src) in dict(locals())
             exec "self.cflag = {} > {}".format(dest, src) in dict(locals())
 
-    def action(self, o):
-        if self.eax == 1:
-            if self.ebx == 0 or self.ebx > 3:
-                if o.ebx == 0 or o.ebx > 3:
-                    # NO vs NO
-                    o.esi -= 3
+        elif re.search("int", act):
+            if self.eax == 1:
+                if self.ebx == 0 or self.ebx > 3:
+                    if o.ebx == 0 or o.ebx > 3:
+                        # NO vs NO
+                        o.esi -= 3
+                    else:
+                        # NO vs any
+                        o.esi -= 1
                 else:
-                    # NO vs any
-                    o.esi -= 1
+                    if o.ebx == 0 or o.ebx > 3:
+                        # any vs NO
+                        o.esi -= 3
+                    elif self.ebx == o.ebx % 3 + 1:
+                        # suppress
+                        o.esi -= 3
+                    elif self.ebx == o.ebx:
+                        o.esi -= 2
+                    else:
+                        # suppressed
+                        o.esi -= 1
+                        
+                self.edi = o.esi
+            elif self.eax == 2:
+                self.esi += 1
+                o.edi = self.esi
             else:
-                if o.ebx == 0 or o.ebx > 3:
-                    # any vs NO
-                    o.esi -= 3
-                elif self.ebx == o.ebx % 3 + 1:
-                    # suppress
-                    o.esi -= 3
-                elif self.ebx == o.ebx:
-                    o.esi -= 2
-                else:
-                    # suppressed
-                    o.esi -= 1
-                    
-            self.edi = o.esi
-        elif self.eax == 2:
-            self.esi += 1
-            o.edi = self.esi
-        else:
-            o.ebx = 0
+                o.ebx = 0
 
-        self.eip += 1
-        if self.eip > len(self.acts):
-            self.is_legal = False
-        
     def is_running(self):
         return self.esi > 0 and self.is_legal
  

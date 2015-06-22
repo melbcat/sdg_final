@@ -45,18 +45,15 @@ def start_game():
         if not s.is_running() or not e.is_running():
             return
             
-        s_act = s.acts[s.eip - 1]
-        e_act = e.acts[e.eip - 1]
-        if "int" not in s_act:
-            s.ni()
-        if "int" not in e_act:
-            e.ni()
+        s.ni(e)
+        e.ni(s)
 
-        if "int" in s_act:
-            s.action(e)
-        if "int" in e_act:
-            e.action(s)
-    
+        print "self:"
+        print s.acts[s.eip - 2]
+        s.print_info()
+        print "enemy:"
+        print e.acts[e.eip - 2]
+        e.print_info()
 
 def main():
     parser = argparse.ArgumentParser(description='ASM battle')
@@ -89,8 +86,6 @@ def main():
         else:
             winner = 0 if s.is_legal else 1
 
-    s.print_info()
-    e.print_info()
 
     print winner
         
