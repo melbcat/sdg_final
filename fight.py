@@ -105,9 +105,9 @@ def main():
         winner = 0 if s.is_legal else 1
 
     if winner == 0:
-        print "Ash Ketchum"
-    else:
-        print "Gary Oak"
+        print "Ash Ketchum win!"
         print open("/home/ASMMon/flag", "r").read()
+    else:
+        print "Gary Oak win!"
         
 main()
