@@ -50,9 +50,12 @@ def start_game():
 
     while True:
         if int(time.time()) - stime > 10:
-            return
-        if not s.is_running() or not e.is_running():
-            return
+            print "Time's up!"
+            break
+        if s.no_hp() or e.no_hp():
+            break
+        if s.no_ins() or e.no_ins():
+            break
 
         import os
         os.system("clear")           
@@ -94,12 +97,15 @@ def main():
     if (s.is_legal and e.is_legal) or \
         (not s.is_legal and not e.is_legal): # judge by HP
         if s.esi == e.esi:
-            winner = 2
+            winner = 1
         else:
             winner = 0 if s.esi > e.esi else 1
     else: # judge by legal
         winner = 0 if s.is_legal else 1
 
-    print winner
+    if winner == 0:
+        print "Self win!"
+    else:
+        print "Enemy win!"
         
 main()

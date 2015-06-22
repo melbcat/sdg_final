@@ -173,6 +173,8 @@ Msg:
             else:
                 o.ebx = 0
 
-    def is_running(self):
-        return self.esi > 0 and self.is_legal
+    def no_hp(self):
+        return self.esi <= 0
+    def no_ins(self):
+        return not self.is_legal
  
