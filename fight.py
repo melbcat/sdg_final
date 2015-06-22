@@ -54,10 +54,10 @@ def start_game():
         if not s.is_running() or not e.is_running():
             return
             
-        if args.info != "off":
+        if args.info:
             s.print_info()
         s.ni(e)
-        if args.info != "off":
+        if args.info:
             e.print_info()
         e.ni(s)
 
