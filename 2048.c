@@ -136,7 +136,7 @@ void print_board()
 {
     int i, j;
         
-    system("clear");
+    clear();
     print_edge("┌", "┐", "-");
 
     /* print info bar */

@@ -12,6 +12,11 @@ void myprintf(const char* fmt, ...)
     va_end(ap);
 }
 
+void clear()
+{
+    system("clear");
+}
+
 void init()
 {
     signal(SIGALRM, handler);
