@@ -1,5 +1,4 @@
 #include <stdint.h>
-#include <unistd.h>
 
 #include "2048.h"
 
@@ -11,8 +10,8 @@ void level1()
     myprintf("Press any key to start...\n");
     getchar();
     init_map();
-    if (play(16)) {
-        myprintf("Congraz! You pass 256! XD\n");
+    if (play(64)) {
+        myprintf("Congraz! You pass 64! XD\n");
         clear_map();
         CHEAT = 1;
     } else {
@@ -37,10 +36,7 @@ int menu()
         myprintf("> ");
         fgets(buf, 4, stdin);
         c = atoi(buf);
-        if (c == 0)
-            myprintf("Illegal choice!\n");
-        else
-            return c;
+        return c;
     }
 }
 
@@ -79,25 +75,6 @@ void set_mapsize()
         SIZE = size;
 }
 
-void show_bestscore()
-{
-    char buf[100];
-    sprintf(buf, "score/%d", getpid() % TEAM);
-
-    if (access(buf, F_OK) == -1) {
-        myprintf("Something error!\n");
-        exit(1);
-    }
-
-    FILE *f = fopen(buf, "r");
-    bzero(buf, 100);
-    fgets(buf, 100, f);
-    fclose(f);
-
-    myprintf("Best score:\n");
-    myprintf(buf);
-}
-
 void set_name()
 {
     myprintf("current name: %s\n", NAME);
@@ -112,12 +89,12 @@ int main()
 
     init();
     while (1) {
-        uint8_t c = menu();
+        uint8_t c = menu() - 1;
         if (c == 5)
             exit(0);
         else if (c > 5)
             continue;
-        ptr = func[c - 1];
+        ptr = func[c];
         (*ptr)();
     }
     

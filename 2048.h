@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <unistd.h>
 
 #define TEAM 11
 #define SIZE g.size
@@ -30,3 +31,4 @@ void init_map();
 void clear_map();
 uint32_t count_goal();
 int play(uint32_t);
+void show_bestscore();
