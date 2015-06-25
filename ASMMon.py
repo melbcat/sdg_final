@@ -16,8 +16,8 @@ class ASMMon:
         self.ebx = 0
         self.ecx = 0
         self.edx = 0
-        self.esi = 10
-        self.edi = 10
+        self.esi = 100
+        self.edi = 100
         self.eip = 0
         self.zflag = False
         self.cflag = False

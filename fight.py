@@ -45,7 +45,6 @@ def start_game():
     e.eip = 1
     s.set_name("Ash Ketchum")
     e.set_name("Gary Oak")
-    e.esi = 20
 
     stime = int(time.time())
 
