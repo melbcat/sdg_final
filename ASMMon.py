@@ -29,23 +29,6 @@ class ASMMon:
     def set_name(self, name):
         self.name = name
 
-    """
-    def print_info(self):
-        os.system("clear")
-        print "=======" + self.name + "========"
-        print str(self.acts[self.eip - 1])
-        print "eax: " + str(self.eax)
-        print "ebx: " + str(self.ebx)
-        print "ecx: " + str(self.ecx)
-        print "edx: " + str(self.edx)
-        print "esi: " + str(self.esi)
-        print "edi: " + str(self.edi)
-        print "eip: " + str(self.eip)
-        print "zflag: " + str(self.zflag)
-        print "cflag: " + str(self.cflag)
-        raw_input()
-    """
-            
     def ni(self, o):
         if self.eax == 2:
             self.esi -= 1
@@ -56,7 +39,7 @@ class ASMMon:
         if self.eip > len(self.acts):
             self.is_legal = False
 
-    def print_info(self, o):
+    def print_info(self, o, act):
         fmt =\
 """\
 [{0}]
@@ -81,8 +64,6 @@ Msg:
             attr = "Grass"
         else:
             attr = "None"
-
-        act = self.acts[self.eip - 2]
 
         if re.search("^ *mov +eax", act):
             msg = "{} changes to {} status.".format(self.name, status)
@@ -109,7 +90,7 @@ Msg:
             
         if re.search("mov", act):
             dest = re.search("e[abcd]x", act).group()
-            src = re.search(", *(e[abcd]x|e[sd]i|[\d]+)", act).group().split(" ")[1]
+            src = re.search("(e[abcd]x|e[sd]i|[\d]+) *$", act).group()
 
             # eval
             dest = "self." + dest
@@ -126,7 +107,7 @@ Msg:
 
         elif re.search("cmp", act):
             dest = re.search("(e[abcd]x|e[sd]i|[\d]+)", act).group()
-            src = re.search(", *(e[abcd]x|e[sd]i|[\d]+)", act).group().split(" ")[1]
+            src = re.search("(e[abcd]x|e[sd]i|[\d]+) *$", act).group()
 
             # eval
             dest = "self." + dest if is_reg(dest) else dest
@@ -168,7 +149,7 @@ Msg:
                         
                 self.edi = o.esi
             elif self.eax == 2:
-                self.esi += 1
+                self.esi += 2
                 o.edi = self.esi
             else:
                 o.ebx = 0

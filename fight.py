@@ -60,13 +60,15 @@ def start_game():
 
         import os
         os.system("clear")           
+        act = s.acts[s.eip - 1]
         s.ni(e)
         if args.info:
-            s.print_info(e)
+            s.print_info(e, act)
+        act = e.acts[e.eip - 1]
         e.ni(s)
         if args.info:
-            e.print_info(s)
-        raw_input()
+            e.print_info(s, act)
+            raw_input()
 
 def main():
     global args
