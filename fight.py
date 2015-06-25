@@ -4,6 +4,7 @@ import sys
 import argparse
 import re
 import time
+import os 
 from ASMMon import ASMMon
 
 s = ASMMon()
@@ -61,10 +62,12 @@ def start_game():
 
         act = s.acts[s.eip - 1]
         s.ni(e)
-        s.print_info(e, act)
+        info = s.print_info(e, act)
+        os.system("echo \"{}\" >> {}".format(info, args.log))
         act = e.acts[e.eip - 1]
         e.ni(s)
-        e.print_info(s, act)
+        info = e.print_info(s, act)
+        os.system("echo \"{}\" >> {}".format(info, args.log))
 
 def main():
     global args
@@ -73,9 +76,11 @@ def main():
     parser.add_argument("-e", "--enemy", help="Enemy's actions.", default="enemy", required = True, metavar = "ENEMY ACTION")
     parser.add_argument("-s", "--self", help="Your's actions.", default="self", required = True, metavar = "SELF ACTION")
     parser.add_argument("-i", "--info", help="Show the battle info.", action='store_true')
+    parser.add_argument("--log", help="Battle log", default="/tmp/log_" + str(os.getpid()), metavar = "PATH")
     parser.add_argument("-t", "--time", type=int, help="Fight time.", default=10)
     args = parser.parse_args()
-
+    
+    os.system("echo > " + args.log)
 
     try:
         self_acts = open(args.self, "r").read().strip().split("\n")
