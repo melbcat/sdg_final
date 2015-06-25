@@ -30,7 +30,8 @@ class ASMMon:
         self.name = name
 
     def ni(self, o):
-        if self.eax == 2:
+        ins = self.acts[self.eip - 1]
+        if self.eax == 2 and "int" not in ins :
             self.esi -= 1
             o.edi = self.esi
         self.execute(self.acts[self.eip - 1], o)
@@ -77,6 +78,10 @@ Msg:
                 msg += "{} increases 1 HP".format(self.name)
             else:
                 msg += "{} become None attribute".format(o.name)
+        elif re.search("^ *(add|sub|mod) +eax", act):
+            msg = "{} changes to {} status.".format(self.name, status)
+        elif re.search("^ *(add|sub|mod) +ebx", act):
+            msg = "{} changes to {} attribute.".format(self.name, attr)
         else:
             msg = "{} is preparing to do something...".format(self.name)
 
@@ -96,6 +101,24 @@ Msg:
             dest = "self." + dest
             src = "self." + src if is_reg(src) else src
             exec "{} = {}".format(dest, src) in dict(locals())
+
+        elif re.search("(add|sub|mod)", act):
+            dest = re.search("e[abcd]x", act).group()
+            src = re.search("(e[abcd]x|e[sd]i|[\d]+) *$", act).group()
+
+            # eval
+            dest = "self." + dest
+            src = "self." + src if is_reg(src) else src
+            if "add" in act:
+                exec "{} += {}".format(dest, src) in dict(locals())
+            elif "sub" in act:
+                exec "{} -= {}".format(dest, src) in dict(locals())
+            elif "mod" in act:
+                if not is_reg(src) and int(src) == 0:
+                    src = pow(2, 32)
+                exec "{} %= {}".format(dest, src) in dict(locals())
+            # overflow
+            exec "{} %= pow(2, 32)".format(dest) in dict(locals())
 
         elif re.search("(jmp|je|ja|jne)", act):
             dest = re.search("[\d]+", act).group()
@@ -149,9 +172,11 @@ Msg:
                         
                 self.edi = o.esi
             elif self.eax == 2:
-                self.esi += 2
+                if self.esi < 100:
+                    self.esi += 1
                 o.edi = self.esi
             else:
+                o.eax = 0
                 o.ebx = 0
 
     def no_hp(self):

@@ -14,14 +14,14 @@ args = None
 def check_fmt(act):
     pat = "^ *("
     # legal instructions
-    for ins in ["mov", "int", "cmp", "jmp", "je", "ja", "jne"]:
+    for ins in ["mov", "int", "cmp", "jmp", "je", "ja", "jne", "add", "sub", "mod"]:
         pat += ins + "|"
     pat = pat[:-1]
-    pat += ") +(e[abcd]x|e[sd]i|0x80|[\d]+)($| *, *(e[abcd]x|e[sd]i|[\d]+)$)"
+    pat += ") +(e[abcd]x|e[sd]i|0x80|[\d]+)( *$| *, *(e[abcd]x|e[sd]i|[\d]+) *$)"
     return re.search(pat, act)
 
 def check_logic(act):
-    if re.search("^ *mov*?", act):
+    if re.search("^ *mov", act):
         return re.search("^ *mov +e[abcd]x*?", act)
     elif re.search("^ *(jmp|je|ja|jne)", act):
         return re.search("^ *(jmp|je|ja|jne) +[\d]+ *$", act)
@@ -29,6 +29,8 @@ def check_logic(act):
         return re.search(" *int +0x80 *$", act)
     elif re.search("^ *cmp*?", act):
         return True 
+    elif re.search("^ *(add|sub|mod)*?", act):
+        return re.search("^ *(add|sub|mod) +e[abcd]x*?", act)
     else:
         return False
 
@@ -49,7 +51,7 @@ def start_game():
     stime = int(time.time())
 
     while True:
-        if int(time.time()) - stime > 10:
+        if int(time.time()) - stime > args.time:
             print "Time's up!"
             break
         if s.no_hp() or e.no_hp():
@@ -76,6 +78,7 @@ def main():
     parser.add_argument("-e", "--enemy", help="Enemy's actions.", default="enemy", required = True, metavar = "ENEMY ACTION")
     parser.add_argument("-s", "--self", help="Your's actions.", default="self", required = True, metavar = "SELF ACTION")
     parser.add_argument("-i", "--info", help="Show the battle info.", action='store_true')
+    parser.add_argument("-t", "--time", type=int, help="Fight time.", default=10)
     args = parser.parse_args()
 
 
