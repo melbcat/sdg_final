@@ -22,6 +22,7 @@ class ASMMon:
         self.zflag = False
         self.cflag = False
         self.is_legal = False 
+        os.system("echo > log")
 
     def set_actions(self, acts):
         self.acts = acts
@@ -85,7 +86,8 @@ Msg:
         else:
             msg = "{} is preparing to do something...".format(self.name)
 
-        print fmt.format(self.name, self.esi, attr, status, msg)
+        info = fmt.format(self.name, self.esi, attr, status, msg)
+        os.system("echo \"{}\" >> log".format(info))
 
 
 

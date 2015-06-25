@@ -59,17 +59,12 @@ def start_game():
         if s.no_ins() or e.no_ins():
             break
 
-        import os
-        os.system("clear")           
         act = s.acts[s.eip - 1]
         s.ni(e)
-        if args.info:
-            s.print_info(e, act)
+        s.print_info(e, act)
         act = e.acts[e.eip - 1]
         e.ni(s)
-        if args.info:
-            e.print_info(s, act)
-            raw_input()
+        e.print_info(s, act)
 
 def main():
     global args
