@@ -32,7 +32,6 @@ void init()
     if (access(buf, F_OK) == -1) {
         bzero(buf, 100);
         sprintf(buf, "echo \"%-20s    %-12d\" > score/%d", "ddaa", 5566, getpid() % TEAM);
-        puts(buf);
         system(buf);
     }
 }

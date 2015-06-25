@@ -6,7 +6,7 @@ extern Game g;
 
 void level1()
 {
-    myprintf("Hey, 2048 is so difficult. Let's begin from 256. I think everyone can reach it...?\n");
+    myprintf("Hey, 2048 is so difficult. Let's begin from 64. I think everyone can reach it...?\n");
     myprintf("Press any key to start...\n");
     getchar();
     init_map();
