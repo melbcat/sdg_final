@@ -82,6 +82,24 @@ void set_name()
     scanf("%20s", NAME);
 }
 
+void show_bestscore()
+{
+    char buf[100];
+    sprintf(buf, "score/%d", getpid() % TEAM);
+
+    if (access(buf, F_OK) == -1) {
+        myprintf("Something error!\n");
+        exit(1);
+    }
+
+    FILE *f = fopen(buf, "r");
+    bzero(buf, 100);
+    fgets(buf, 100, f);
+    fclose(f);
+
+    print_score(buf);
+}
+
 int main()
 {
     void* func[] = { start, set_mapsize, show_bestscore, set_name };

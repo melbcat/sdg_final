@@ -92,21 +92,8 @@ uint32_t count_goal()
     return pow(2, SIZE * 2 + 3);
 }
 
-void show_bestscore()
+void print_score(const char* buf)
 {
-    char buf[100];
-    sprintf(buf, "score/%d", getpid() % TEAM);
-
-    if (access(buf, F_OK) == -1) {
-        myprintf("Something error!\n");
-        exit(1);
-    }
-
-    FILE *f = fopen(buf, "r");
-    bzero(buf, 100);
-    fgets(buf, 100, f);
-    fclose(f);
-
     myprintf("Best score:\n");
     myprintf(buf);
 }
