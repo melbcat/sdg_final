@@ -43,6 +43,9 @@ def parse_actions(acts):
         
     return True
 
+def log_info(info):
+    os.system("echo \"{}\" >> {}".format(info, args.log))
+
 def start_game():
     s.eip = 1
     e.eip = 1
@@ -62,12 +65,10 @@ def start_game():
 
         act = s.acts[s.eip - 1]
         s.ni(e)
-        info = s.print_info(e, act)
-        os.system("echo \"{}\" >> {}".format(info, args.log))
+        log_info(s.print_info(e, act))
         act = e.acts[e.eip - 1]
         e.ni(s)
-        info = e.print_info(s, act)
-        os.system("echo \"{}\" >> {}".format(info, args.log))
+        log_info(e.print_info(s, act))
 
 def main():
     global args
@@ -110,8 +111,10 @@ def main():
 
     if winner == 0:
         print "Ash Ketchum win!"
+        log_info("Ash Ketchum win!")
         print open("/home/ASMMon/flag", "r").read()
     else:
         print "Gary Oak win!"
+        log_info("Gary Oak win!")
         
 main()
