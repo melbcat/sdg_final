@@ -16,8 +16,8 @@ class ASMMon:
         self.ebx = 0
         self.ecx = 0
         self.edx = 0
-        self.esi = 100
-        self.edi = 100
+        self.esi = 30
+        self.edi = 30
         self.eip = 0
         self.zflag = False
         self.cflag = False
@@ -176,8 +176,9 @@ Msg:
                     self.esi += 1
                 o.edi = self.esi
             else:
-                o.eax = 0
                 o.ebx = 0
+                o.esi -= 3
+                self.edi = o.esi
 
     def no_hp(self):
         return self.esi <= 0
