@@ -54,16 +54,6 @@ def get_funcs():
     return funcs
 
 def ddmin(c, test):
-    """Return a sublist of CIRCUMSTANCES that is a relevant configuration
-       with respect to TEST."""
-
-    def isdone(traced):
-        done = True
-        for k in traced.keys():
-            if traced[k] == 0:
-                done = False
-        return done
-
     def trace(cf, traced):
         def line_has_func(line, traced):
             for k in fs.keys():
@@ -106,12 +96,6 @@ def ddmin(c, test):
 if __name__ == "__main__":
     tests = {}
     circumstances = []
-
-    def string_to_list(s):
-        c = []
-        for i in range(len(s)):
-            c.append((i, s[i]))
-        return c
     
     def mytest(c, index):
         global tests
@@ -141,4 +125,3 @@ if __name__ == "__main__":
 
     mytest(c, "crash")
     ddmin(c, mytest)
-
