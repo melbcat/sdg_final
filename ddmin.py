@@ -54,6 +54,37 @@ def get_funcs():
     return funcs
 
 def ddmin(c, test):
+    def remove_funcs():
+        for k in fs.keys():
+            subset = codes_to_input(listminus(codes, fs[k]))
+            if FAIL in test(subset, k):
+                for l in fs[k]:
+                    codes.remove(l)
+                del fs[k]
+
+    def remove_condition():
+        for i in range(1, 10): # indent layer
+            cond_codes = None
+            for l in codes:
+                if re.search("^\t{{{}}}(if|while)".format(i), l.code):
+                    cond_codes = []
+                    cond_codes.append(l)
+                elif re.search("^\t{{{}}}".format(i+1), l.code):
+                    if cond_codes != None:
+                        cond_codes.append(l)
+                else:
+                    if cond_codes == None:
+                        continue
+                    subset = codes_to_input(listminus(codes, cond_codes))
+                    if FAIL in test(subset, "if_" + str(cond_codes[0].no)):
+                        for l in cond_codes:
+                            codes.remove(l)
+                    cond_codes = None
+
+            
+            
+        
+
     def trace(cf, traced):
         def line_has_func(line, traced):
             for k in fs.keys():
@@ -70,15 +101,21 @@ def ddmin(c, test):
 
         return traced 
 
+    # init 
     global codes, fs, nfs
     codes = get_codes(c) # codes, list
     fs = get_funcs() # functions, dict
-    nfs = [] # functions in current text
+    cf = None # current function
+
+    remove_funcs()
+    remove_condition()
+    fs = get_funcs() # update functions
+
     traced = dict() # traced functions
     for k in fs.keys():
         traced[k] = False
 
-    cf = None # current function
+    nfs = [] # functions in current text
     nfs.append("run")
     while len(nfs) > 0:
         cf = nfs.pop(0)
@@ -91,7 +128,7 @@ def ddmin(c, test):
         for line in fs[k]:
             codes.remove(line)
 
-    print_codes(codes)
+    return codes_to_input(codes)
 
 if __name__ == "__main__":
     tests = {}
@@ -123,5 +160,12 @@ if __name__ == "__main__":
         if cmd != "":
             c += cmd + "\n"
 
-    mytest(c, "crash")
-    ddmin(c, mytest)
+    c2 = ""
+    while True:
+        c2 = ddmin(c, mytest)
+        if c2.strip("\n") == c.strip("\n"):
+            break
+        else:
+            c = c2
+
+    print c.strip("\n")
