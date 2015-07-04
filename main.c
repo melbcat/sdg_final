@@ -108,9 +108,9 @@ int main()
     init();
     while (1) {
         uint8_t c = menu() - 1;
-        if (c == 5)
+        if (c == 4)
             exit(0);
-        else if (c > 5)
+        else if (c > 4)
             continue;
         ptr = func[c];
         (*ptr)();
