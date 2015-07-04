@@ -177,7 +177,8 @@ Msg:
                 o.edi = self.esi
             else:
                 o.ebx = 0
-                o.esi -= 3
+                if o.eax == 2:
+		    o.esi -= 3
                 self.edi = o.esi
 
     def no_hp(self):
