@@ -32,14 +32,14 @@ func 是用來儲存各個功能的陣列，大小為 4
 ```
 
 (2) Stack Overflow  
-在 `print\_board` 裡面  
+在 `print_board` 裡面  
 宣告了兩個大小為 16 的字串陣列  
 第 153 & 154 行利用 `sprintf` 產生遊戲資訊的字串  
 將會發生 buffer overflow 的問題  
 " goal: %u score: %u " 字串長度已經超過 16 byte  
-但由於後面還有 `info\_fmt` 這個變數  
+但由於後面還有 `info_fmt` 這個變數  
 所以 153 行並不會 crash  
-要到 154 行將字串複製到 `info\_fmt` 才會使程式 crash  
+要到 154 行將字串複製到 `info_fmt` 才會使程式 crash  
 由於這題編譯時 gcc 有做優化對齊 stack 長度  
 因此字串長度總共要到 28 以上才會造成程式 crash  
 只要選最大的地圖使 goal 到達最大值  
@@ -74,7 +74,7 @@ func 是用來儲存各個功能的陣列，大小為 4
 (4) Divide Zero  
 在 C 語言中只要有除以 0 的程式碼被執行  
 就會跳出 SIGFPE 的 signal 且中斷程式執行  
-在宣告地圖大小時 邊界值使用 `int8\_t` 的型態  
+在宣告地圖大小時 邊界值使用 `int8_t` 的型態  
 但是卻以 `atoi` 取得輸入整數  
 因此只要輸入數字是 256 的倍數  
 將等同輸入 0  
@@ -104,7 +104,7 @@ func 是用來儲存各個功能的陣列，大小為 4
 導致程式 crash  
 
 ```
- 95 void print\_score(const char* buf)
+ 95 void print_score(const char* buf)
  96 {
  97     myprintf("Best score:\n");
  98     myprintf(buf);
@@ -122,11 +122,11 @@ func 是用來儲存各個功能的陣列，大小為 4
 
 ```
  23     if (!BOARD)
- 24         BOARD = (uint16_t\*\*) malloc(SIZE * sizeof(uint16_t\*));
+ 24         BOARD = (uint16_t**) malloc(SIZE * sizeof(uint16_t*));
 ```
 
 (7) Off-By-One  
-在 `set username` 的功能中  
+在 `set_name` 的功能中  
 最多將會讀取 20 byte 的字串加上 1 byte 的 NULL 作為字串結尾  
 但是用來存名稱的 name 陣列只有 20 byte  
 多出來的 1 byte 將會把用來產生隨機的 seed 變數給覆蓋  
